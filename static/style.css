@@ -37,30 +37,43 @@ body {
 .stars {
     background-image: 
         radial-gradient(2px 2px at 20px 30px, var(--star-glow), transparent),
-        radial-gradient(2px 2px at 40px 70px, var(--star-glow), transparent),
-        radial-gradient(1px 1px at 90px 40px, var(--star-glow), transparent);
+        radial-gradient(2px 2px at 40px 70px, var(--star-glow), transparent);
     background-repeat: repeat;
-    background-size: 200px 100px;
-    animation: starsMove 50s linear infinite;
+    background-size: 200px 150px;
+    animation: starsMove 100s linear infinite;
 }
 
 .stars2 {
     background-image: 
-        radial-gradient(1px 1px at 120px 80px, var(--neon-blue), transparent),
-        radial-gradient(1px 1px at 200px 160px, var(--accent-pink), transparent);
+        radial-gradient(1px 1px at 120px 80px, var(--neon-blue), transparent);
     background-repeat: repeat;
     background-size: 300px 200px;
-    animation: starsMove 80s linear infinite;
-    opacity: 0.7;
+    animation: starsMove 150s linear infinite;
+    opacity: 0.6;
 }
 
 .stars3 {
     background-image: 
-        radial-gradient(3px 3px at 300px 150px, var(--star-glow), transparent);
+        radial-gradient(1px 1px at 80px 160px, var(--accent-pink), transparent);
     background-repeat: repeat;
     background-size: 400px 300px;
-    animation: starsMove 120s linear infinite;
-    opacity: 0.5;
+    animation: starsMove 200s linear infinite;
+    opacity: 0.4;
+}
+
+/* Дополнительные космические элементы */
+.space-dust {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background-image: 
+        radial-gradient(1px 1px at 25% 25%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 75% 75%, rgba(0, 243, 255, 0.3), transparent);
+    animation: dustMove 200s linear infinite;
 }
 
 /* Космическая граница */
@@ -152,6 +165,10 @@ body {
     transform: translateY(-2px);
 }
 
+.full-width {
+    width: 100%;
+}
+
 /* Главный герой-блок */
 .hero-section {
     min-height: 100vh;
@@ -160,71 +177,83 @@ body {
     justify-content: center;
     flex-direction: column;
     text-align: center;
-    padding: 2rem;
+    padding: 6rem 2rem 2rem;
     position: relative;
 }
 
 /* Система планеты */
 .planet-system {
     position: relative;
-    margin: 3rem 0;
+    margin: 2rem 0;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .planet {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     position: relative;
-    animation: rotate 30s linear infinite;
+    animation: rotate 25s linear infinite;
 }
 
 .planet-surface {
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, var(--planet-orange), #ff8c00, #ff5500);
+    background: linear-gradient(135deg, #ff6b35, #ff8c00, #ff5500, #ff4444);
     border-radius: 50%;
     position: relative;
     box-shadow: 
-        inset -30px -30px 30px rgba(0, 0, 0, 0.5),
-        0 0 80px var(--planet-orange);
+        inset -25px -25px 40px rgba(0, 0, 0, 0.5),
+        inset 10px 10px 20px rgba(255, 255, 255, 0.2),
+        0 0 60px rgba(255, 107, 53, 0.8);
 }
 
 .planet-surface::before {
     content: '';
     position: absolute;
-    top: 20%;
-    left: 15%;
-    width: 60px;
-    height: 60px;
+    top: 15%;
+    left: 25%;
+    width: 40px;
+    height: 40px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
     box-shadow: 
-        40px 80px 0 -10px rgba(0, 0, 0, 0.2),
-        -30px 120px 0 5px rgba(0, 0, 0, 0.3);
+        50px 30px 0 -5px rgba(0, 0, 0, 0.2),
+        -20px 80px 0 10px rgba(0, 0, 0, 0.4),
+        60px -30px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .planet-rings {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotateX(75deg);
-    width: 400px;
-    height: 80px;
-    border: 8px solid rgba(255, 255, 255, 0.3);
+    width: 300px;
+    height: 300px;
+    transform: translate(-50%, -50%) rotateX(75deg) rotateZ(20deg);
+    border: 12px solid transparent;
     border-radius: 50%;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    animation: ringRotate 20s linear infinite;
+    animation: ringRotate 18s linear infinite;
 }
 
 .planet-rings::before {
     content: '';
     position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border: 4px solid rgba(0, 243, 255, 0.2);
+    top: -12px;
+    left: -12px;
+    right: -12px;
+    bottom: -12px;
+    border: 8px solid;
+    border-image: linear-gradient(45deg, 
+        transparent 20%, 
+        rgba(0, 243, 255, 0.6) 40%, 
+        rgba(255, 0, 204, 0.8) 60%, 
+        transparent 80%
+    ) 1;
     border-radius: 50%;
-    animation: ringRotate 15s linear infinite reverse;
+    animation: ringRotate 12s linear infinite reverse;
 }
 
 .planet-glow {
@@ -243,9 +272,10 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    font-size: 3rem;
-    animation: orbit 8s linear infinite;
-    transform-origin: -100px 0;
+    font-size: 2.5rem;
+    animation: orbit 6s linear infinite;
+    text-shadow: 0 0 20px var(--neon-blue);
+    transform-origin: 0 0;
 }
 
 /* Контент героя */
@@ -256,10 +286,11 @@ body {
 
 .main-title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 900;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     text-shadow: 0 0 30px rgba(0, 243, 255, 0.7);
+    line-height: 1.2;
 }
 
 .title-part {
@@ -270,16 +301,21 @@ body {
 .carousel-container {
     position: relative;
     display: inline-block;
+    min-width: 400px;
+    height: 100px;
+    perspective: 1000px;
 }
 
 .word-carousel {
-    font-size: 4.5rem;
-    background: linear-gradient(45deg, var(--accent-pink), var(--neon-blue));
+    font-size: 4rem;
+    background: linear-gradient(45deg, var(--accent-pink), var(--neon-blue), #ff6b35);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 30px var(--accent-pink);
-    animation: textGlow 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 40px var(--accent-pink);
+    animation: textGlow 3s ease-in-out infinite alternate;
+    display: inline-block;
+    transform-style: preserve-3d;
 }
 
 .hero-subtitle {
@@ -293,10 +329,16 @@ body {
     padding: 15px 40px;
     border-color: var(--accent-pink);
     color: var(--accent-pink);
+    margin-right: 1rem;
 }
 
 .cta-button:hover {
     box-shadow: 0 0 30px var(--accent-pink);
+}
+
+.secondary-button {
+    font-size: 1.2rem;
+    padding: 15px 40px;
 }
 
 /* Секции */
@@ -323,6 +365,55 @@ section {
     background: linear-gradient(90deg, var(--accent-pink), var(--neon-blue));
     margin: 0 auto;
     border-radius: 2px;
+}
+
+/* Секция "Как это работает" */
+.how-it-works-section {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.steps-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.step-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    min-width: 250px;
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2);
+    border-color: var(--neon-blue);
+}
+
+.step-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    color: var(--accent-pink);
+    margin-bottom: 1rem;
+}
+
+.step-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.step-card h3 {
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 1rem;
+    color: var(--neon-blue);
 }
 
 /* Сетка возможностей */
@@ -379,45 +470,165 @@ section {
     color: var(--neon-blue);
 }
 
-/* Отзывы */
-.testimonials-container {
+/* Секция с предпросмотром интерфейса */
+.interface-preview {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-preview-container {
+    display: flex;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chat-interface {
+    background: rgba(11, 11, 45, 0.8);
+    border: 1px solid var(--neon-blue);
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    backdrop-filter: blur(10px);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.chat-avatar {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.chat-info h4 {
+    color: var(--neon-blue);
+    margin-bottom: 0.2rem;
+}
+
+.chat-info p {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.message {
+    display: flex;
+    align-items: flex-end;
+    max-width: 80%;
+}
+
+.message.received {
+    align-self: flex-start;
+}
+
+.message.sent {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    font-size: 1.2rem;
+    margin: 0 0.5rem;
+}
+
+.message-content {
+    background: rgba(0, 243, 255, 0.1);
+    border-radius: 15px;
+    padding: 0.8rem 1rem;
+    position: relative;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+}
+
+.message.sent .message-content {
+    background: rgba(255, 0, 204, 0.1);
+    border-color: rgba(255, 0, 204, 0.2);
+}
+
+.message-time {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    display: block;
+    text-align: right;
+    margin-top: 0.3rem;
+}
+
+.chat-input {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid rgba(0, 243, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.chat-input input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--neon-blue);
+    border-radius: 20px;
+    padding: 0.8rem 1rem;
+    color: var(--neon-blue);
+    outline: none;
+}
+
+.chat-input input::placeholder {
+    color: rgba(0, 243, 255, 0.5);
+}
+
+.send-button {
+    background: transparent;
+    border: none;
+    color: var(--neon-blue);
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.send-button:hover {
+    transform: scale(1.1);
+}
+
+/* Секция "Почему именно мы" */
+.why-us-section {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.benefits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.testimonial-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 0, 204, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
+.benefit-item {
     text-align: center;
-    transition: all 0.3s ease;
+    padding: 1.5rem;
 }
 
-.testimonial-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(255, 0, 204, 0.2);
-}
-
-.cat-avatar {
+.benefit-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
 }
 
-.testimonial-card h4 {
+.benefit-item h3 {
     font-family: 'Orbitron', sans-serif;
-    margin-bottom: 1rem;
     color: var(--accent-pink);
-}
-
-.rating {
-    color: gold;
-    font-size: 1.2rem;
-    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 /* Статистика */
@@ -469,12 +680,117 @@ section {
     margin: 0 auto 2rem;
 }
 
+.footer-section h4 {
+    color: var(--neon-blue);
+    margin-bottom: 1rem;
+}
+
+.footer-section a {
+    display: block;
+    color: var(--star-glow);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--neon-blue);
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
+}
+
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 1200px;
     margin: 0 auto;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--deep-space);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    border: 1px solid var(--neon-blue);
+    box-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: var(--star-glow);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--accent-pink);
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.cosmic-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--neon-blue);
+    border-radius: 8px;
+    color: var(--neon-blue);
+    font-family: 'Exo 2', sans-serif;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.cosmic-input:focus {
+    border-color: var(--accent-pink);
+    box-shadow: 0 0 10px rgba(255, 0, 204, 0.3);
+}
+
+.auth-switch {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.auth-switch a {
+    color: var(--accent-pink);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 /* Анимации */
@@ -499,13 +815,20 @@ section {
 }
 
 @keyframes ringRotate {
-    from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
-    to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
+    from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg) rotateY(10deg); }
+    to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg) rotateY(10deg); }
 }
 
 @keyframes orbit {
-    from { transform: rotate(0deg) translateX(200px) rotate(0deg); }
-    to { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+    0% {
+        transform: rotate(0deg) translateX(180px) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) translateX(180px) rotate(-180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) translateX(180px) rotate(-360deg) scale(1);
+    }
 }
 
 @keyframes pulse {
@@ -514,34 +837,87 @@ section {
 }
 
 @keyframes textGlow {
-    from { text-shadow: 0 0 30px var(--accent-pink); }
-    to { text-shadow: 0 0 50px var(--neon-blue), 0 0 70px var(--accent-pink); }
+    0% { 
+        text-shadow: 0 0 30px var(--accent-pink);
+        transform: translateZ(0);
+    }
+    50% { 
+        text-shadow: 0 0 60px var(--neon-blue), 0 0 80px var(--accent-pink);
+        transform: translateZ(20px);
+    }
+    100% { 
+        text-shadow: 0 0 40px var(--accent-pink), 0 0 100px var(--neon-blue);
+        transform: translateZ(0);
+    }
+}
+
+@keyframes dustMove {
+    from { transform: translateX(0) translateY(0); }
+    to { transform: translateX(-100px) translateY(-100px); }
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
     .main-title {
+        font-size: 2.2rem;
+    }
+
+    .word-carousel {
         font-size: 2.5rem;
     }
-    
-    .word-carousel {
-        font-size: 3rem;
+
+    .carousel-container {
+        min-width: 280px;
+        height: 70px;
     }
-    
+
+    .planet-system {
+        width: 300px;
+        height: 300px;
+    }
+
     .planet {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
     }
-    
+
     .planet-rings {
-        width: 280px;
+        width: 220px;
+        height: 220px;
     }
-    
+
     .orbiting-cat {
-        transform-origin: -80px 0;
+        font-size: 2rem;
+        transform-origin: 0 0;
     }
-    
-    section {
-        padding: 3rem 1rem;
+
+    @keyframes orbit {
+        0% { transform: rotate(0deg) translateX(130px) rotate(0deg) scale(1); }
+        100% { transform: rotate(360deg) translateX(130px) rotate(-360deg) scale(1); }
+    }
+
+    .steps-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .step-card {
+        min-width: auto;
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .cta-button {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .secondary-button {
+        margin-bottom: 1rem;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
     }
 }
