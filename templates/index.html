@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CosmoCats - Межгалактическая социальная сеть для котов</title>
-    <link rel="stylesheet" href="static/style.css">
+    <title>CosmoCats - Межгалактическая социальная сеть</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -12,7 +12,6 @@
     <div class="stars"></div>
     <div class="stars2"></div>
     <div class="stars3"></div>
-    <div class="space-dust"></div>
     
     <!-- Космическая граница -->
     <div class="cosmic-border"></div>
@@ -21,7 +20,7 @@
     <header class="cosmic-header">
         <nav class="nav-container">
             <div class="logo">
-                <span class="logo-icon">🚀🐱</span>
+                <span class="logo-icon">🚀</span>
                 <span class="logo-text">CosmoCats</span>
             </div>
             <div class="auth-buttons">
@@ -45,21 +44,20 @@
                 <div class="planet-rings"></div>
                 <div class="planet-glow"></div>
             </div>
-            <div class="orbiting-cat">🐱</div>
         </div>
         
         <div class="hero-content">
             <h1 class="main-title">
-                <span class="title-part">Коты которые:</span>
+                <span class="title-part">Сообщество которое</span>
                 <span class="carousel-container">
-                    <span id="word-carousel" class="word-carousel">общаются</span>
+                    <span id="word-carousel" class="word-carousel">объединяет</span>
                 </span>
             </h1>
-            <p class="hero-subtitle">Первая межгалактическая социальная сеть для продвинутых кошачьих</p>
+            <p class="hero-subtitle">Первая межгалактическая платформа для общения и взаимодействия</p>
             <div class="hero-buttons">
                 <button class="cta-button cosmic-button" onclick="showAuthModal('register')">
                     <span class="btn-glow"></span>
-                    🚀 Начать путешествие
+                    🚀 Присоединиться
                 </button>
                 <button class="secondary-button cosmic-button" onclick="scrollToFeatures()">
                     <span class="btn-glow"></span>
@@ -72,7 +70,7 @@
     <!-- Секция "Как это работает" -->
     <section class="how-it-works-section">
         <div class="section-header">
-            <h2>Как попасть в космическое братство</h2>
+            <h2>Простой процесс регистрации</h2>
             <div class="section-divider"></div>
         </div>
         
@@ -80,22 +78,22 @@
             <div class="step-card">
                 <div class="step-number">1</div>
                 <div class="step-icon">📱</div>
-                <h3>Регистрация</h3>
-                <p>Введите номер телефона и получите код в Telegram</p>
+                <h3>Ввод телефона</h3>
+                <p>Введите номер телефона для получения кода подтверждения</p>
             </div>
             
             <div class="step-card">
                 <div class="step-number">2</div>
-                <div class="step-icon">🐱</div>
-                <h3>Создание профиля</h3>
-                <p>Выберите крутое космическое имя и пароль</p>
+                <div class="step-icon">🔐</div>
+                <h3>Подтверждение</h3>
+                <p>Введите код, полученный в Telegram</p>
             </div>
             
             <div class="step-card">
                 <div class="step-number">3</div>
-                <div class="step-icon">🚀</div>
-                <h3>В космос!</h3>
-                <p>Общайтесь с котами со всей галактики</p>
+                <div class="step-icon">👤</div>
+                <h3>Создание профиля</h3>
+                <p>Выберите имя пользователя и настройте профиль</p>
             </div>
         </div>
     </section>
@@ -103,45 +101,45 @@
     <!-- Секция возможностей -->
     <section class="features-section" id="features">
         <div class="section-header">
-            <h2>Космические возможности</h2>
+            <h2>Возможности платформы</h2>
             <div class="section-divider"></div>
         </div>
         
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">👽</div>
+                <div class="feature-icon">💬</div>
                 <h3>Межгалактический чат</h3>
-                <p>Общайтесь с котами из других звездных систем. Обсуждайте лучшие места для сна и охоты на космических мышей!</p>
+                <p>Общайтесь с пользователями со всех уголков галактики в реальном времени</p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
                 <h3>AI-компаньоны</h3>
-                <p>Умные коты-боты, которые всегда поддержат беседу и помогут найти тему для разговора</p>
+                <p>Интеллектуальные помощники для комфортного общения и поиска информации</p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">🎮</div>
-                <h3>Космические игры</h3>
-                <p>Охота за лазерными указками в 4D пространстве и другие развлечения</p>
+                <h3>Интерактивные игры</h3>
+                <p>Развлекательный контент и игры для приятного времяпрепровождения</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📸</div>
-                <h3>Галактические селфи</h3>
-                <p>Делитесь фотографиями на фоне черных дыр и туманностей</p>
+                <h3>Медиа-обмен</h3>
+                <p>Делитесь фотографиями и видео в высоком качестве</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⭐</div>
                 <h3>Система достижений</h3>
-                <p>Зарабатывайте звезды за космические подвиги и хвастайтесь перед друзьями</p>
+                <p>Отслеживайте прогресс и получайте награды за активность</p>
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">🛸</div>
-                <h3>Виртуальные полеты</h3>
-                <p>Исследуйте далекие планеты не вставая с дивана (или с когтеточки)</p>
+                <div class="feature-icon">🌐</div>
+                <h3>Виртуальные пространства</h3>
+                <p>Исследуйте уникальные цифровые среды и сообщества</p>
             </div>
         </div>
     </section>
@@ -149,41 +147,41 @@
     <!-- Секция с предпросмотром интерфейса -->
     <section class="interface-preview">
         <div class="section-header">
-            <h2>Так будет выглядеть ваш космический мессенджер</h2>
+            <h2>Интуитивный интерфейс</h2>
             <div class="section-divider"></div>
         </div>
         
         <div class="chat-preview-container">
             <div class="chat-interface">
                 <div class="chat-header">
-                    <div class="chat-avatar">🐱🚀</div>
+                    <div class="chat-avatar">👤</div>
                     <div class="chat-info">
-                        <h4>Космо-кот Барсик</h4>
+                        <h4>Алексей Космический</h4>
                         <p>В сети • Туманность Ориона</p>
                     </div>
                 </div>
                 
                 <div class="chat-messages">
                     <div class="message received">
-                        <div class="message-avatar">🐱</div>
+                        <div class="message-avatar">👤</div>
                         <div class="message-content">
-                            <p>Привет! Как дела на Земле? Я тут на Марсе отличное место для сна нашел!</p>
+                            <p>Привет! Как твои впечатления от новой системы связи?</p>
                             <span class="message-time">12:34</span>
                         </div>
                     </div>
                     
                     <div class="message sent">
                         <div class="message-content">
-                            <p>Круто! А гравитация не мешает? У нас тут проблемы с красной точкой - она исчезает в другом измерении! 😼</p>
+                            <p>Отлично! Качество связи превосходное, задержки практически нет</p>
                             <span class="message-time">12:35</span>
                         </div>
-                        <div class="message-avatar">😼</div>
+                        <div class="message-avatar">👤</div>
                     </div>
                     
                     <div class="message received">
-                        <div class="message-avatar">🐱</div>
+                        <div class="message-avatar">👤</div>
                         <div class="message-content">
-                            <p>Попробуй квантовую указку! Я свою заказал с Альфа Центавра 🚀</p>
+                            <p>Согласен! Особенно впечатляет стабильность на межпланетных расстояниях</p>
                             <span class="message-time">12:36</span>
                         </div>
                     </div>
@@ -191,42 +189,65 @@
                 
                 <div class="chat-input">
                     <input type="text" placeholder="Введите сообщение...">
-                    <button class="send-button">📨</button>
+                    <button class="send-button">➤</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Секция "Почему именно мы" -->
+    <!-- Секция "Преимущества" -->
     <section class="why-us-section">
         <div class="section-header">
-            <h2>Почему коты выбирают CosmoCats?</h2>
+            <h2>Почему выбирают CosmoCats</h2>
             <div class="section-divider"></div>
         </div>
         
         <div class="benefits-grid">
             <div class="benefit-item">
                 <div class="benefit-icon">🔒</div>
-                <h3>100% конфиденциальность</h3>
-                <p>Ваши секретные планы по захвату мира в безопасности</p>
+                <h3>Безопасность данных</h3>
+                <p>Все ваши данные защищены современными методами шифрования</p>
             </div>
             
             <div class="benefit-item">
                 <div class="benefit-icon">⚡</div>
-                <h3>Сверхсветовая скорость</h3>
-                <p>Сообщения доставляются быстрее скорости света</p>
+                <h3>Высокая скорость</h3>
+                <p>Оптимизированная сеть обеспечивает мгновенную передачу данных</p>
             </div>
             
             <div class="benefit-item">
                 <div class="benefit-icon">🌎</div>
-                <h3>Вся галактика</h3>
-                <p>Общайтесь с котами из всех уголков вселенной</p>
+                <h3>Глобальный охват</h3>
+                <p>Доступ к сообществу пользователей со всей галактики</p>
             </div>
             
             <div class="benefit-item">
-                <div class="benefit-icon">😸</div>
-                <h3>Только коты</h3>
-                <p>Никаких собак и других непонятных существ!</p>
+                <div class="benefit-icon">🎯</div>
+                <h3>Удобство использования</h3>
+                <p>Интуитивный интерфейс, доступный пользователям любого уровня</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция статистики -->
+    <section class="stats-section">
+        <div class="section-header">
+            <h2>Наша экосистема в цифрах</h2>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" data-target="500000">0</div>
+                <div class="stat-label">Активных пользователей</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="99.9">0</div>
+                <div class="stat-label">% Доступности сети</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="150">0</div>
+                <div class="stat-label">Спутников связи</div>
             </div>
         </div>
     </section>
@@ -236,7 +257,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>CosmoCats</h4>
-                <p>Межгалактическая социальная сеть для кошачьих</p>
+                <p>Межгалактическая платформа для общения и взаимодействия</p>
                 <div class="social-links">
                     <span class="social-icon">📡</span>
                     <span class="social-icon">🛸</span>
@@ -251,12 +272,12 @@
             </div>
             <div class="footer-section">
                 <h4>Контакты</h4>
-                <p>📡 Сигнал: meow@cosmocats.space</p>
-                <p>🛸 Координаты: Туманность Кошачья Лапа</p>
+                <p>📧 support@cosmocats.space</p>
+                <p>📞 +7 (999) 123-45-67</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 CosmoCats. Все права защищены во всех вселенных. P.S. Коты правят миром! 🐱👑</p>
+            <p>&copy; 2024 CosmoCats. Все права защищены.</p>
         </div>
     </footer>
 
@@ -265,14 +286,14 @@
         <div class="modal-content cosmic-card">
             <span class="close-modal" onclick="closeAuthModal()">&times;</span>
             <div id="loginForm">
-                <h3>Вход в космическую сеть</h3>
+                <h3>Вход в систему</h3>
                 <div class="input-group">
-                    <input type="text" placeholder="Логин" class="cosmic-input">
+                    <input type="text" placeholder="Имя пользователя" class="cosmic-input">
                 </div>
                 <div class="input-group">
                     <input type="password" placeholder="Пароль" class="cosmic-input">
                 </div>
-                <button class="cosmic-button full-width">Войти 🚀</button>
+                <button class="cosmic-button full-width">Войти</button>
                 <p class="auth-switch">Нет аккаунта? <a onclick="showAuthModal('register')">Зарегистрироваться</a></p>
             </div>
             
@@ -281,53 +302,12 @@
                 <div class="input-group">
                     <input type="tel" placeholder="Номер телефона" class="cosmic-input">
                 </div>
-                <button class="cosmic-button full-width">Получить код в Telegram 📱</button>
+                <button class="cosmic-button full-width">Получить код в Telegram</button>
                 <p class="auth-switch">Уже есть аккаунт? <a onclick="showAuthModal('login')">Войти</a></p>
             </div>
         </div>
     </div>
 
-    <script>
-        // Массив слов для карусели
-        const words = [
-            'общаются', 'вдохновляют', 'исследуют', 'создают', 'покоряют',
-            'развлекают', 'мурлыкают', 'мечтают', 'путешествуют', 'открывают',
-            'изучают', 'строят'
-        ];
-        let currentWordIndex = 0;
-        const carouselElement = document.getElementById('word-carousel');
-
-        function updateCarousel() {
-            carouselElement.textContent = words[currentWordIndex];
-            currentWordIndex = (currentWordIndex + 1) % words.length;
-        }
-
-        setInterval(updateCarousel, 2500); // Обновление каждые 2.5 секунды
-        updateCarousel(); // Инициализация
-
-        // Функции модального окна
-        function showAuthModal(formType) {
-            document.getElementById('authModal').style.display = 'flex';
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById(formType + 'Form').style.display = 'block';
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
-        }
-
-        function scrollToFeatures() {
-            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Закрытие модального окна по клику вне его области
-        window.onclick = function(event) {
-            const modal = document.getElementById('authModal');
-            if (event.target === modal) {
-                closeAuthModal();
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
