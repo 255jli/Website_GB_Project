@@ -4,11 +4,142 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Аккаунт</title>
-  <style>body{font-family:Arial,Helvetica,sans-serif;padding:20px}</style>
+  <script>
+    async function postJSON(url, data){
+      const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.error || 'Ошибка');
+      return j;
+    }
+    async function postForm(url, formData){
+      const r = await fetch(url, {method:'POST', body: formData});
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.error || 'Ошибка');
+      return j;
+    }
+    function selectTab(id){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+      document.getElementById('tab-'+id).classList.add('active');
+      document.getElementById('content-'+id).classList.add('active');
+    }
+    async function saveDisplayName(){
+      const name = document.getElementById('displayName').value.trim();
+      const msg = document.getElementById('nameMsg');
+      msg.textContent = '';
+      try{ await postJSON('/account/display_name', {display_name: name}); msg.textContent='Сохранено'; msg.className='msg ok'; }
+      catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+    }
+    async function changePassword(){
+      const oldp = document.getElementById('oldPassword').value;
+      const newp = document.getElementById('newPassword').value;
+      const msg = document.getElementById('pwdMsg');
+      msg.textContent=''; msg.className='msg';
+      try{ await postJSON('/account/change_password', {old_password: oldp, new_password: newp}); msg.textContent='Пароль обновлён'; msg.className='msg ok'; document.getElementById('oldPassword').value=''; document.getElementById('newPassword').value=''; }
+      catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+    }
+    async function uploadAvatar(){
+      const f = document.getElementById('avatar').files[0];
+      const msg = document.getElementById('avatarMsg');
+      msg.textContent=''; msg.className='msg';
+      if(!f){ msg.textContent='Выберите файл'; msg.className='msg err'; return }
+      const fd = new FormData(); fd.append('avatar', f);
+      try{ const j = await postForm('/account/avatar', fd); document.getElementById('avatarImg').src = j.avatar_url + '?t=' + Date.now(); msg.textContent='Аватар обновлён'; msg.className='msg ok'; }
+      catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+    }
+    async function deleteAccount(){
+      if(!confirm('Удалить аккаунт безвозвратно?')) return;
+      const msg = document.getElementById('deleteMsg');
+      msg.textContent=''; msg.className='msg';
+      try{ await postJSON('/account/delete', {}); window.location.href = '/'; }
+      catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+    }
+    function setupAvatarDnD(){
+      const drop = document.getElementById('avatarDrop');
+      const input = document.getElementById('avatar');
+      if(!drop) return;
+      ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); e.stopPropagation(); drop.classList.add('dragover')}));
+      ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragover')}));
+      drop.addEventListener('drop', e=>{ const f = e.dataTransfer.files && e.dataTransfer.files[0]; if(f){ input.files = e.dataTransfer.files; previewAvatar(); }});
+      input.addEventListener('change', previewAvatar);
+    }
+    function previewAvatar(){
+      const input = document.getElementById('avatar');
+      const file = input.files && input.files[0];
+      const img = document.getElementById('avatarImg');
+      const msg = document.getElementById('avatarMsg');
+      if(!file) return;
+      if(file.type !== 'image/png'){ msg.textContent='Только PNG 1024x1024'; msg.className='msg err'; return }
+      const reader = new FileReader();
+      reader.onload = () => { img.src = reader.result; };
+      reader.readAsDataURL(file);
+    }
+    document.addEventListener('DOMContentLoaded', setupAvatarDnD);
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+  <header class="cosmic-header">
+    <nav class="nav-container">
+      <div class="logo"><span class="logo-icon">🚀</span><span class="logo-text">CosmoCats</span></div>
+      <div class="auth-buttons">
+        <form method="post" action="/logout" onsubmit="return false" id="logoutForm">
+          <button class="cosmic-button" onclick="fetch('/logout',{method:'POST'}).then(()=>location.href='/')"><span class="btn-glow"></span>Выйти</button>
+        </form>
+      </div>
+    </nav>
+  </header>
 </head>
 <body>
-  <h2>Добро пожаловать</h2>
-  <p>Вы вошли как: {{ login }}</p>
-  <p><a href="/auth">Назад</a></p>
+  <div class="header-spacer"></div>
+  <div class="account-container">
+    <h2 class="card-title">Аккаунт</h2>
+    <p class="muted">Вы вошли как: <b>{{ login }}</b></p>
+
+    <div class="tabs">
+      <div class="tab active" id="tab-cabinet" onclick="selectTab('cabinet')">Личный кабинет</div>
+      <div class="tab" id="tab-platform" onclick="selectTab('platform')">Платформа</div>
+    </div>
+
+    <div class="tab-content active" id="content-cabinet">
+      <div class="account-grid">
+        <div class="card">
+          <div class="avatar-wrap">
+            <img id="avatarImg" class="avatar" src="{{ avatar_url or url_for('static', filename='avatars/placeholder.png') }}" alt="avatar" onerror="this.src='https://via.placeholder.com/160?text=👤'">
+            <div id="avatarDrop" class="avatar-drop">Перетащите PNG 1024x1024 сюда или выберите файл</div>
+            <input type="file" id="avatar" accept="image/png" style="display:none">
+            <div class="avatar-actions">
+              <button class="btn" onclick="document.getElementById('avatar').click()">Выбрать</button>
+              <button class="btn" onclick="uploadAvatar()">Загрузить</button>
+              <span class="msg" id="avatarMsg"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <label>Имя отображения</label>
+            <input type="text" id="displayName" value="{{ display_name or '' }}">
+            <div class="row"><button class="btn" onclick="saveDisplayName()">Сохранить</button> <span class="msg" id="nameMsg"></span></div>
+          </div>
+
+          <div class="row">
+            <label>Смена пароля</label>
+            <input type="password" id="oldPassword" placeholder="Старый пароль">
+            <input type="password" id="newPassword" placeholder="Новый пароль (мин. 6)">
+            <div class="row"><button class="btn" onclick="changePassword()">Обновить пароль</button> <span class="msg" id="pwdMsg"></span></div>
+          </div>
+
+          <div class="row">
+            <button class="btn danger" onclick="deleteAccount()">Удалить аккаунт</button>
+            <span class="msg" id="deleteMsg"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="content-platform">
+      <div class="card"><p>еще в разработке</p></div>
+    </div>
+  </div>
 </body>
 </html>

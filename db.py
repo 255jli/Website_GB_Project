@@ -40,7 +40,9 @@ def init_db():
         CREATE TABLE users (
             login TEXT PRIMARY KEY,
             password_hash TEXT NOT NULL,
-            created_at REAL NOT NULL
+            created_at REAL NOT NULL,
+            display_name TEXT,
+            avatar_path TEXT
         )
         ''')
     else:
@@ -55,7 +57,9 @@ def init_db():
             CREATE TABLE users (
                 login TEXT PRIMARY KEY,
                 password_hash TEXT NOT NULL,
-                created_at REAL NOT NULL
+                created_at REAL NOT NULL,
+                display_name TEXT,
+                avatar_path TEXT
             )
             ''')
             # Prepare copy depending on available columns in old table
@@ -69,6 +73,17 @@ def init_db():
                 # fallback: nothing sensible to copy, just leave empty new table
                 pass
             cur.execute('DROP TABLE IF EXISTS users_old')
+        # add new columns if missing
+        if 'display_name' not in cols:
+            try:
+                cur.execute('ALTER TABLE users ADD COLUMN display_name TEXT')
+            except Exception:
+                pass
+        if 'avatar_path' not in cols:
+            try:
+                cur.execute('ALTER TABLE users ADD COLUMN avatar_path TEXT')
+            except Exception:
+                pass
 
     # cleanup: remove verification_codes table if present (no longer used)
     cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='verification_codes'")
@@ -91,12 +106,54 @@ def create_user(login: str, password_hash: str) -> None:
 def get_user(login: str) -> Optional[Dict[str, Any]]:
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute('SELECT login, password_hash, created_at FROM users WHERE login = ?', (login,))
+    cur.execute('SELECT login, password_hash, created_at, display_name, avatar_path FROM users WHERE login = ?', (login,))
     row = cur.fetchone()
     conn.close()
     if not row:
         return None
-    return {'login': row[0], 'password_hash': row[1], 'created_at': row[2]}
+    return {
+        'login': row[0],
+        'password_hash': row[1],
+        'created_at': row[2],
+        'display_name': row[3],
+        'avatar_path': row[4]
+    }
+
+def update_password(login: str, new_password_hash: str) -> None:
+    def _upd():
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET password_hash = ? WHERE login = ?', (new_password_hash, login))
+        conn.commit()
+        conn.close()
+    return _write_with_retry(_upd)
+
+def update_display_name(login: str, display_name: Optional[str]) -> None:
+    def _upd():
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET display_name = ? WHERE login = ?', (display_name, login))
+        conn.commit()
+        conn.close()
+    return _write_with_retry(_upd)
+
+def update_avatar_path(login: str, avatar_path: Optional[str]) -> None:
+    def _upd():
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET avatar_path = ? WHERE login = ?', (avatar_path, login))
+        conn.commit()
+        conn.close()
+    return _write_with_retry(_upd)
+
+def delete_user(login: str) -> None:
+    def _del():
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('DELETE FROM users WHERE login = ?', (login,))
+        conn.commit()
+        conn.close()
+    return _write_with_retry(_del)
 
 def set_verification_code(email: str, code: str, expires: float) -> None:
     def _set():

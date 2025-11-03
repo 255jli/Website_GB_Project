@@ -15,6 +15,9 @@
     --accent-pink: #ff00cc;
     --text-primary: #e0e0ff;
     --text-secondary: #a0a0c0;
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-strong: rgba(255, 255, 255, 0.1);
+    --border: rgba(0, 243, 255, 0.18);
 }
 
 body {
@@ -24,6 +27,44 @@ body {
     overflow-x: hidden;
     min-height: 100vh;
     line-height: 1.6;
+}
+
+/* ========= Account (Личный кабинет) ========= */
+.header-spacer{height:72px}
+
+.account-container{max-width:1100px;margin:0 auto;padding:1.5rem}
+
+.tabs{display:flex;gap:12px;margin:0 0 16px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 14px;cursor:pointer;border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;background:var(--surface);color:var(--text-primary);transition:all .25s}
+.tab.active{background:linear-gradient(135deg, rgba(0,243,255,0.08), rgba(255,0,204,0.08));font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.2)}
+.tab:hover{transform:translateY(-1px)}
+
+.tab-content{display:none;border:1px solid var(--border);border-top:none;padding:16px;border-radius:0 8px 8px 8px;background:var(--surface)}
+.tab-content.active{display:block}
+
+.account-grid{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card-title{font-family:'Orbitron',sans-serif;color:var(--neon-blue);margin-bottom:10px}
+
+.avatar-wrap{display:flex;flex-direction:column;gap:10px;align-items:center}
+.avatar{width:160px;height:160px;border-radius:50%;object-fit:cover;background:#1c1c3a;display:block;border:2px solid var(--border)}
+.avatar-drop{width:100%;padding:12px;border:1px dashed var(--border);border-radius:12px;text-align:center;color:var(--text-secondary);background:rgba(255,255,255,.03);transition:border-color .2s, background .2s}
+.avatar-drop.dragover{border-color:var(--neon-blue);background:rgba(0,243,255,.06)}
+.avatar-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.row{margin:10px 0}
+label{display:block;margin-bottom:6px;color:var(--text-secondary)}
+input[type="text"], input[type="password"], input[type="file"]{width:100%;max-width:420px;padding:10px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.08);color:var(--text-primary)}
+.btn{padding:10px 16px;border:1px solid var(--neon-blue);background:transparent;color:var(--neon-blue);border-radius:10px;cursor:pointer}
+.btn.danger{border-color:#ff3b3b;color:#ff5f5f}
+.msg{margin-left:8px}
+.msg.ok{color:#66ffa6}
+.msg.err{color:#ff7b7b}
+
+@media (max-width: 920px){
+  .account-grid{grid-template-columns:1fr}
+  .avatar{width:128px;height:128px}
 }
 
 /* Анимированный звездный фон */
