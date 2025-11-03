@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auth demo</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:20px}
+    .box{max-width:420px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:8px}
+    input{width:100%;padding:10px;margin:8px 0}
+    button{padding:10px 16px}
+    .hidden{display:none}
+    .success{color:green}
+    .error{color:red}
+    .anim{transition: all .4s ease; transform: scale(1)}
+    .anim.play{transform: scale(1.06); box-shadow:0 6px 24px rgba(0,0,0,.15)}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Регистрация</h2>
+    <div id="regResult"></div>
+    <input id="regLogin" placeholder="Логин" />
+    <input id="regPassword" type="password" placeholder="Пароль" />
+    <button id="btnRegister">Зарегистрироваться</button>
+
+    <hr />
+    <h2>Вход</h2>
+  <div id="loginResult"></div>
+  <input id="loginLogin" placeholder="Логин" />
+  <input id="loginPassword" type="password" placeholder="Пароль" />
+  <button id="btnLogin">Войти</button>
+
+    <div id="accountBlock" class="hidden">
+      <h3>Аккаунт</h3>
+      <p id="accountLogin"></p>
+      <button id="btnLogout">Выйти</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>
