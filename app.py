@@ -7,7 +7,7 @@ from flask_login import (
 )
 import os
 from flask import send_file
-
+ 
 import auth_manager
 import db_manager
 import profile_manager
@@ -156,20 +156,16 @@ def create_app() -> Flask:
     @app.route("/chat/<string:chat_id>/avatar")
     @login_required
     def chat_avatar(chat_id: str):
-        # Serve avatar blob as image/png
         from flask import Response
-        for session in db_manager.get_session():
-            row = (
-                session.query(db_manager.Chat)
-                .filter(db_manager.Chat.chat_id == chat_id)
-                .first()
-            )
+        with db_manager.get_session() as session:
+            row = session.query(db_manager.Chat).filter(db_manager.Chat.chat_id == chat_id).first()
             if not row or not row.cat_avatar_blob:
                 return Response(status=404)
             return Response(row.cat_avatar_blob, mimetype="image/png")
 
-    return app
 
+    return app
+    
 
 if __name__ == "__main__":
     app = create_app()

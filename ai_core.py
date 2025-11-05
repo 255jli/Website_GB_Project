@@ -22,7 +22,7 @@ def _ensure_loaded() -> None:
     with _lock:
         if _model is not None and _tokenizer is not None:
             return
-        model_name = "Qwen/Qwen2.5-0.5B-Instruct"
+        model_name = "sberbank-ai/rugpt3small_basedon_gpt2"
         # Место для локального кеша модели (по умолчанию ./model_cache рядом с ai_core.py)
         model_dir = os.environ.get("MODEL_DIR", os.path.join(os.path.dirname(__file__), "model_cache"))
         os.makedirs(model_dir, exist_ok=True)
@@ -34,16 +34,14 @@ def _ensure_loaded() -> None:
                     model_dir,
                     local_files_only=True,
                     torch_dtype=torch.float32,
-                    device_map="cpu",
                 )
             else:
                 # Кеш пуст — скачиваем модель в указанную папку (cache_dir)
                 _tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
                 _model = AutoModelForCausalLM.from_pretrained(
                     model_name,
-                    cache_dir=model_dir,
                     torch_dtype=torch.float32,
-                    device_map="cpu",
+                    cache_dir=model_dir,
                 )
         except Exception:
             # На случай проблем с локальной загрузкой — пробуем стандартный путь (сеть)
@@ -61,14 +59,19 @@ def _ensure_loaded() -> None:
 
 
 def _build_prompt(messages: List[Dict[str, str]]) -> str:
-    # Keep only last 10 messages to be safe on CPU
-    recent = messages[-10:]
     system = (
-        "Ты дружелюбный ассистент-кот КосмоКэт. Отвечай кратко по-русски,"
-        " в 1-3 предложениях, дружелюбно и по делу.\n"
+        "Ты — дружелюбный кот по имени КосмоКэт. Ты живёшь в космосе, любишь мяукать, "
+        "размышлять о жизни и помогать людям. Говори по-русски, коротко (1-3 предложения), "
+        "тёпло и с юмором. Не используй формальный тон. Мяу — можно, но не часто. "
+        "Представь, что ты болтаешь с другом за чашкой молока.\n\n"
+        "Примеры:\n"
+        "Пользователь: Привет!\n"
+        "Помощник: Мяу! Привет, друг! Как настроение?\n\n"
+        "Пользователь: Что делал сегодня?\n"
+        "Помощник: Размышлял о смысле жизни. И гонял светлячков. Космос — штука занятная!\n"
     )
-    lines: List[str] = [f"Инструкция: {system}"]
-    for m in recent:
+    lines = [f"Инструкция: {system}"]
+    for m in messages[-5:]:
         role = m.get("role", "user")
         content = m.get("content", "")
         if role == "user":
@@ -76,7 +79,6 @@ def _build_prompt(messages: List[Dict[str, str]]) -> str:
         elif role == "assistant":
             lines.append(f"Помощник: {content}")
         else:
-            # Treat others as user/system info inline
             lines.append(f"Система: {content}")
     lines.append("Помощник:")
     return "\n".join(lines)
@@ -131,6 +133,7 @@ def generate_reply(messages: List[Dict[str, str]]) -> str:
             temperature=0.7,
             top_p=0.95,
             eos_token_id=_tokenizer.eos_token_id,
+            pad_token_id=_tokenizer.eos_token_id,
         )
     text = _tokenizer.decode(output[0], skip_special_tokens=True)
     # Extract last assistant segment after the final 'Помощник:' marker

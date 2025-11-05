@@ -59,9 +59,12 @@ def _circle_crop(image_bytes: bytes, size: int = 512) -> Optional[bytes]:
 
 def create_chat(user_id: int) -> str:
     chat_id = uuid.uuid4().hex[:16]
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         cat_bytes = _fetch_cat_image_bytes()
         circle_bytes = _circle_crop(cat_bytes) if cat_bytes else None
+        if not circle_bytes:
+            with open("assets/default_avatar.png", "rb") as f:
+                circle_bytes = f.read()
         chat = db_manager.Chat(
             user_id=user_id,
             chat_id=chat_id,
@@ -70,12 +73,11 @@ def create_chat(user_id: int) -> str:
         )
         session.add(chat)
         return chat_id
-    return chat_id
 
 
 def list_chats(user_id: int) -> List[Dict[str, str]]:
     result: List[Dict[str, str]] = []
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         rows = (
             session.query(db_manager.Chat)
             .filter(db_manager.Chat.user_id == user_id)
@@ -84,61 +86,50 @@ def list_chats(user_id: int) -> List[Dict[str, str]]:
         )
         for c in rows:
             result.append({"chat_id": c.chat_id})
-        return result
     return result
 
 
+
 def get_chat_history(chat_id: str) -> List[Dict]:
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         chat = _load_chat(session, chat_id)
         if not chat:
             return []
         return db_manager.deserialize_history(chat.chat_history)
-    return []
+
 
 
 def append_message(chat_id: str, role: str, content: str) -> None:
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         chat = _load_chat(session, chat_id)
         if not chat:
-            return None
+            return
         history = db_manager.deserialize_history(chat.chat_history)
         history.append({"role": role, "content": content})
-        # Применим усечение: оставим не более 5 сообщений пользователя и 5 сообщений ассистента
+
         def _prune_history(hist: List[Dict]) -> List[Dict]:
-            picked_rev: List[Dict] = []
+            picked_rev = []
             user_count = 0
             assistant_count = 0
             for m in reversed(hist):
                 r = m.get("role", "user")
-                if r == "user":
-                    if user_count >= 5:
-                        continue
+                if r == "user" and user_count < 5:
                     picked_rev.append(m)
                     user_count += 1
-                elif r == "assistant":
-                    if assistant_count >= 5:
-                        continue
+                elif r == "assistant" and assistant_count < 5:
                     picked_rev.append(m)
                     assistant_count += 1
-                else:
-                    continue
                 if user_count >= 5 and assistant_count >= 5:
                     break
             return list(reversed(picked_rev))
 
         pruned = _prune_history(history)
         chat.chat_history = db_manager.serialize_history(pruned)
-        return None
-    return None
 
 
 def clear_history(chat_id: str) -> None:
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         chat = _load_chat(session, chat_id)
         if not chat:
-            return None
+            return
         chat.chat_history = db_manager.serialize_history([])
-        return None
-    return None
-

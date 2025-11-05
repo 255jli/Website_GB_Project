@@ -23,29 +23,22 @@ def _to_auth_user(u: db_manager.User) -> AuthUser:
 
 
 def register_user(login: str, password: str, name: Optional[str] = None) -> bool:
-    """Create a new user with hashed password. Returns False if login exists."""
-    for session in db_manager.get_session():
-        # Check existing
+    with db_manager.get_session() as session:
         existing = session.query(db_manager.User).filter(db_manager.User.login == login).first()
         if existing is not None:
             return False
-        # Create
         password_hash = generate_password_hash(password)
         user = db_manager.User(login=login, password_hash=password_hash, name=name)
         session.add(user)
-        # commit via context manager
         return True
-    return False
 
 
 def verify_login(login: str, password: str) -> bool:
-    """Verify login+password against stored hash."""
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         user = session.query(db_manager.User).filter(db_manager.User.login == login).first()
         if user is None:
             return False
         return check_password_hash(user.password_hash, password)
-    return False
 
 
 def get_user_by_id(user_id: str | int) -> Optional[AuthUser]:
@@ -54,19 +47,17 @@ def get_user_by_id(user_id: str | int) -> Optional[AuthUser]:
         uid = int(user_id)
     except Exception:
         return None
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         user = session.get(db_manager.User, uid)
         if user is None:
             return None
         return _to_auth_user(user)
-    return None
 
 
 def get_user_by_login(login: str) -> Optional[AuthUser]:
-    for session in db_manager.get_session():
+    with db_manager.get_session() as session:
         user = session.query(db_manager.User).filter(db_manager.User.login == login).first()
         return _to_auth_user(user) if user else None
-    return None
 
 
 def login_user_session(user: AuthUser, remember: bool = False) -> None:

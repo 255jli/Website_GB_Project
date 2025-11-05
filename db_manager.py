@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Iterator, List, Dict, Any
+from contextlib import contextmanager
 import os
 import json
 
@@ -11,6 +12,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
 )
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -42,11 +44,20 @@ def init_db(database_url: Optional[str] = None) -> None:
     url = database_url or get_database_url()
     _engine = create_engine(url, future=True)
     SessionLocal = sessionmaker(bind=_engine, autoflush=False, expire_on_commit=False, future=True)
-    Base.metadata.create_all(_engine)
+    try:
+        Base.metadata.create_all(_engine)
+    except OperationalError as e:
+        msg = str(e).lower()
+        # Игнорируем известную ситуацию с дублирующимся индексом в sqlite
+        if "index ix_chats_user_id already exists" in msg or "already exists" in msg:
+            print("Warning: проблемы с созданием индекса в БД (уже существует) — пропускаю создание индексов.")
+        else:
+            raise
 
 
+@contextmanager
 def get_session() -> Iterator[Session]:
-    if SessionLocal is None:  # lazy init
+    if SessionLocal is None:
         init_db()
     assert SessionLocal is not None
     session = SessionLocal()
