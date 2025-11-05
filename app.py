@@ -12,7 +12,7 @@ import auth_manager
 import db_manager
 import profile_manager
 import chat_manager
-import ai_core
+from ai_core import generate_reply
 
 
 def create_app() -> Flask:
