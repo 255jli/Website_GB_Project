@@ -25,31 +25,40 @@ def _ensure_loaded() -> None:
         model_dir = os.environ.get("MODEL_DIR", os.path.join(os.path.dirname(__file__), "model_cache"))
         os.makedirs(model_dir, exist_ok=True)
         
+        # Оптимизация потоков для CPU
+        torch.set_num_threads(max(1, os.cpu_count() // 2))
+        
         try:
             has_files = False
             with os.scandir(model_dir) as entries:
                 for entry in entries:
-                    has_files = True
-                    break
+                    if not entry.name.startswith('.'):  # Игнорируем скрытые файлы
+                        has_files = True
+                        break
             
             if has_files:
                 _tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True)
                 _model = AutoModelForCausalLM.from_pretrained(
                     model_dir,
                     local_files_only=True,
-                    torch_dtype=torch.float32)
+                    torch_dtype=torch.float32,
+                    low_cpu_mem_usage=True,  # Экономия памяти
+                )
             else:
                 _tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
                 _model = AutoModelForCausalLM.from_pretrained(
                     model_name,
                     torch_dtype=torch.float32,
                     cache_dir=model_dir,
+                    low_cpu_mem_usage=True,  # Экономия памяти
                 )
-        except Exception:
+        except Exception as e:
+            print(f"Ошибка загрузки модели: {e}, пробуем стандартный способ...")
             _tokenizer = AutoTokenizer.from_pretrained(model_name)
             _model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 torch_dtype=torch.float32,
+                low_cpu_mem_usage=True,
             )
         
         # Важное исправление - добавляем pad token
@@ -60,34 +69,7 @@ def _ensure_loaded() -> None:
         for p in _model.parameters():
             p.requires_grad = False
 
-def generate_reply(messages: List[Dict[str, str]]) -> str:
-    _ensure_loaded()
-    assert _tokenizer is not None and _model is not None
-    
-    prompt = _build_prompt(messages)
-    input_ids = _tokenizer.encode(prompt, return_tensors="pt")
-    
-    with torch.no_grad():
-        output = _model.generate(
-            input_ids,
-            max_new_tokens=100,  # Более современный параметр
-            num_return_sequences=1,
-            temperature=0.7,
-            do_sample=True,
-            pad_token_id=_tokenizer.eos_token_id,
-            eos_token_id=_tokenizer.eos_token_id,
-            repetition_penalty=1.1,  # Добавляем для разнообразия
-        )
-    
-    response = _tokenizer.decode(output[0], skip_special_tokens=True)
-    
-    if "Ассистент:" in response:
-        response = response.split("Ассистент:")[-1].strip()
-    
-    return response
-
 def _build_prompt(messages: List[Dict[str, str]]) -> str:
-    
     """Простой промптинг для русскоязычной модели"""
     conversation = []
     for m in messages[-6:]:  # берем последние 6 сообщений для контекста
@@ -105,7 +87,6 @@ def _build_prompt(messages: List[Dict[str, str]]) -> str:
     
     return prompt
 
-
 def generate_reply(messages: List[Dict[str, str]]) -> str:
     _ensure_loaded()
     assert _tokenizer is not None and _model is not None
@@ -116,12 +97,14 @@ def generate_reply(messages: List[Dict[str, str]]) -> str:
     with torch.no_grad():
         output = _model.generate(
             input_ids,
-            max_length=len(input_ids[0]) + 100,
+            max_new_tokens=100,  # Правильный параметр для генерации
             num_return_sequences=1,
             temperature=0.7,
             do_sample=True,
             pad_token_id=_tokenizer.eos_token_id,
             eos_token_id=_tokenizer.eos_token_id,
+            repetition_penalty=1.1,
+            early_stopping=True,  # Остановка при достижении EOS
         )
     
     response = _tokenizer.decode(output[0], skip_special_tokens=True)
@@ -131,7 +114,6 @@ def generate_reply(messages: List[Dict[str, str]]) -> str:
         response = response.split("Ассистент:")[-1].strip()
     
     return response
-
 
 def get_random_cat() -> str:
     """Вернуть URL случайного изображения кота, используя публичный endpoint TheCatAPI.

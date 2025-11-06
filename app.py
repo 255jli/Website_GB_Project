@@ -10,9 +10,9 @@ from flask import send_file
  
 import auth_manager
 import db_manager
+import ai_core
 import profile_manager
 import chat_manager
-from ai_core import generate_reply
 
 
 def create_app() -> Flask:
@@ -44,9 +44,9 @@ def create_app() -> Flask:
             return jsonify({"error": "Не удалось получить изображение кота"}), 500
         return jsonify({"url": cat_url})
 
-    @app.route("/favcaticon.ico")
+    @app.route("/favicon.ico")
     def favicon():
-        path = os.path.join(os.path.dirname(__file__), "favcaticon.ico")
+        path = os.path.join(os.path.dirname(__file__), "favicon.ico")
         if os.path.exists(path):
             return send_file(path, mimetype="image/x-icon")
         return redirect(url_for("index"))
