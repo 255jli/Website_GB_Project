@@ -1,26 +1,22 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="hero">
-  <h1>CosmoCats</h1>
-  <p>Космические коты ждут беседы!</p>
-  <div class="actions">
-    <a class="btn btn-primary" href="/login">Войти</a>
-    <a class="btn btn-secondary" href="/register">Регистрация</a>
-  </div>
-  <div class="bg-stars"></div>
-
-  <div class="presentation">
-    <div class="card">
-      <h2>Титульная страница проекта</h2>
-      <p>Проект: CosmoCats — дружелюбный чат-ассистент в образе космического кота.</p>
-      <div class="cat-block">
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CosmoCats</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="theme-dark">
+    <header class="site-header">
+        <div class="logo">CosmoCats</div>
+        <nav class="nav">
+            <a href="/platform">Платформа</a>
+        </nav>
+    </header>
+    <main class="container">
         <button id="fetch-cat-btn" class="btn btn-primary">Показать случайного кота</button>
-        <div class="cat-img-wrap">
-          <img id="random-cat-img" alt="Случайный кот" style="display:none;max-width:100%;border-radius:10px;margin-top:12px;"/>
-        </div>
-      </div>
-      <p class="muted">Нажмите кнопку, чтобы получить изображение кота (без ключа API).</p>
-    </div>
-  </div>
-</section>
-{% endblock %}
+    </main>
+    <script src="/static/script.js"></script>
+</body>
+</html>
