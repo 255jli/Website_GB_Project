@@ -28,30 +28,56 @@ def _ensure_loaded() -> None:
         # Оптимизация потоков для CPU
         torch.set_num_threads(max(1, os.cpu_count() // 2))
         
+        # Путь к локальной модели
+        local_model_path = os.path.join(model_dir, "models--ai-forever--rugpt3small_based_on_gpt2")
+        
         try:
-            has_files = False
-            with os.scandir(model_dir) as entries:
-                for entry in entries:
-                    if not entry.name.startswith('.'):  # Игнорируем скрытые файлы
-                        has_files = True
-                        break
-            
-            if has_files:
-                _tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True)
-                _model = AutoModelForCausalLM.from_pretrained(
-                    model_dir,
-                    local_files_only=True,
-                    torch_dtype=torch.float32,
-                    low_cpu_mem_usage=True,  # Экономия памяти
-                )
+            # Проверяем, есть ли уже скачанная модель
+            if os.path.isdir(local_model_path):
+                # Используем локальную версию
+                snapshot_dir = os.path.join(local_model_path, "snapshots")
+                if os.path.exists(snapshot_dir):
+                    # Берём первую папку в snapshots (любая версия)
+                    snapshot_folders = [f for f in os.listdir(snapshot_dir) if os.path.isdir(os.path.join(snapshot_dir, f))]
+                    if snapshot_folders:
+                        first_snapshot = snapshot_folders[0]
+                        model_path = os.path.join(snapshot_dir, first_snapshot)
+                        _tokenizer = AutoTokenizer.from_pretrained(model_path)
+                        _model = AutoModelForCausalLM.from_pretrained(
+                            model_path,
+                            torch_dtype=torch.float32,
+                            low_cpu_mem_usage=True,
+                        )
+                        print(f"Модель загружена из: {model_path}")
+                    else:
+                        # Если snapshots пуст — пытаемся загрузить без него
+                        _tokenizer = AutoTokenizer.from_pretrained(local_model_path, local_files_only=True)
+                        _model = AutoModelForCausalLM.from_pretrained(
+                            local_model_path,
+                            local_files_only=True,
+                            torch_dtype=torch.float32,
+                            low_cpu_mem_usage=True,
+                        )
+                else:
+                    # Если нет snapshots — загружаем вручную
+                    _tokenizer = AutoTokenizer.from_pretrained(local_model_path, local_files_only=True)
+                    _model = AutoModelForCausalLM.from_pretrained(
+                        local_model_path,
+                        local_files_only=True,
+                        torch_dtype=torch.float32,
+                        low_cpu_mem_usage=True,
+                    )
             else:
+                # Первый запуск — скачиваем через cache_dir
+                print("Скачивание модели... Это может занять 5–10 минут.")
                 _tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
                 _model = AutoModelForCausalLM.from_pretrained(
                     model_name,
                     torch_dtype=torch.float32,
                     cache_dir=model_dir,
-                    low_cpu_mem_usage=True,  # Экономия памяти
+                    low_cpu_mem_usage=True,
                 )
+                print("Модель успешно скачана.")
         except Exception as e:
             print(f"Ошибка загрузки модели: {e}, пробуем стандартный способ...")
             _tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -68,6 +94,7 @@ def _ensure_loaded() -> None:
         _model.eval()
         for p in _model.parameters():
             p.requires_grad = False
+
 
 def _build_prompt(messages: List[Dict[str, str]]) -> str:
     """Простой промптинг для русскоязычной модели"""
