@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Мои чаты - Космокот{% endblock %}
+
+{% block content %}
+<div class="platform-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Мои чаты</h2>
+            <form method="POST" action="{{ url_for('new_chat') }}" class="new-chat-form">
+                <button type="submit" class="btn btn-primary btn-small">
+                    + Новый чат
+                </button>
+            </form>
+        </div>
+
+        <div class="chats-list">
+            {% if chats %}
+                {% for chat in chats %}
+                    <a href="{{ url_for('chat', chat_id=chat.chat_id) }}" 
+                       class="chat-item {% if chat.chat_id == current_chat_id %}active{% endif %}">
+                        <div class="chat-icon">
+                            {% if chat.icon %}
+                                <img src="data:image/png;base64,{{ chat.icon }}" alt="{{ chat.title }}">
+                            {% else %}
+                                <span>🐱</span>
+                            {% endif %}
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-title">{{ chat.title or "Чат с Космокотом" }}</div>
+                            <div class="chat-time">Недавно</div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <h3>Чатов пока нет</h3>
+                    <p>Создайте первый чат с Космокотом!</p>
+                    <form method="POST" action="{{ url_for('new_chat') }}">
+                        <button type="submit" class="btn btn-primary">
+                            Создать чат
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-chat">
+            <div class="welcome-content">
+                <div class="welcome-icon">🚀🐱</div>
+                <h1>Добро пожаловать в Космокот!</h1>
+                <p>Выберите чат из списка или создайте новый для начала общения</p>
+                
+                <div class="welcome-features">
+                    <div class="feature">
+                        <span>🤖</span>
+                        <span>Умный ИИ-помощник</span>
+                    </div>
+                    <div class="feature">
+                        <span>💾</span>
+                        <span>История сообщений</span>
+                    </div>
+                    <div class="feature">
+                        <span>🎨</span>
+                        <span>Красивые аватары</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ url_for('new_chat') }}">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        🚀 Создать новый чат
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

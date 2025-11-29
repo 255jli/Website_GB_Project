@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero-section">
+  <div class="hero-content">
+  <h1 class="hero-title">✨ CosmoCats</h1>
+    <p class="hero-subtitle">Космические коты ждут беседы!</p>
+    <p class="hero-desc">
+      Добро пожаловать в цифровую галактику, где космические коты не просто милые существа, а настоящие проводники в мир технологий и инноваций!
+      Наш чат-ассистент в образе космического кота умеет общаться, шутить и помогать вам в увлекательных путешествиях по вселенной знаний и открытий.
+    </p>
+
+    <a class="btn-neo" href="/platform_a">🚀 Перейти на платформу</a>
+  </div>
+</section>
+
+<!-- Блок проекта + коты -->
+<section class="project-card">
+  <h2 class="section-title">Титульная страница проекта</h2>
+
+  <div class="project-grid">
+    <div class="left">
+      <button id="fetch-cat-btn" class="btn-neo small">Показать случайного кота</button>
+
+      <div class="cat-image-frame">
+        <img id="random-cat-img" style="display:none;" alt="Космический кот" />
+      </div>
+    </div>
+
+    <div class="right">
+      <p class="project-text">
+        Проект: <span class="highlight">CosmoCats</span> это чат-ассистент в образе космического кота.
+      </p>
+      <p class="project-muted">
+        Нажмите кнопку, чтобы получить изображение космического кота (без API ключа).
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Новая секция: рассказ о проекте -->
+<section class="about-project">
+  <h2 class="section-title">О проекте</h2>
+  <p class="about-text">
+    CosmoCats это амбициозный проект, созданный начинающей командой программистов с большими целями.
+    В команде работают: <strong>Лоренц Арсений</strong>, <strong>Валиханов Алихан</strong> , <strong>Коблов Тимур</strong>.
+    Следите за нами, ведь это только начало нашего путешествия
+  </p>
+</section>
+
+<!-- Комментарии космических котов с фотками -->
+<section class="comments-holo">
+  <h2 class="section-title">Комментарии космических котов</h2>
+
+  <div class="comments-holo-grid">
+
+    <div class="holo-item">
+      <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=1" alt="Nebula" />
+      <div class="holo-text">
+        <div class="holo-glow"></div>
+        <p>«Сканирую пространство… У вас отличная энергия.»</p>
+        <span class="author">— Nebula</span>
+      </div>
+    </div>
+
+    <div class="holo-item">
+      <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=2" alt="Orion" />
+      <div class="holo-text">
+        <div class="holo-glow"></div>
+        <p>«Сигнал стабилен. К взлёту готовы!»</p>
+        <span class="author">— Orion</span>
+      </div>
+    </div>
+
+    <div class="holo-item">
+      <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=3" alt="Comet" />
+      <div class="holo-text">
+        <div class="holo-glow"></div>
+        <p>«Добро пожаловать в космо-мир!.»</p>
+        <span class="author">— Comet</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* HERO */
+  .hero-section {
+    padding: 80px 20px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-logo {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 10px;
+    object-fit: contain;
+    display: inline-block;
+  }
+  .hero-title {
+    font-size: 48px;
+    color: #cfe3ff;
+    text-shadow: 0 0 15px #4d7bff, 0 0 30px #1d3aff;
+  }
+  .hero-subtitle {
+    margin-top: 8px;
+    font-size: 20px;
+    color: #bcd0ff;
+  }
+  .hero-desc {
+    margin: 10px auto 26px;
+    max-width: 700px;
+    color: #aab8e8;
+  }
+
+  /* Futuristic Button */
+  .btn-neo {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #3f5dff, #6f8dff);
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    box-shadow: 0 0 18px rgba(125,150,255,0.4);
+    transition: 0.25s ease;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-neo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(160,180,255,0.7);
+  }
+  .btn-neo.small {
+    padding: 10px 18px;
+    font-size: 16px;
+  }
+
+  /* Project Card */
+  .project-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 14px;
+    max-width: 900px;
+    margin: 20px auto;
+    box-shadow: 0 8px 25px rgba(20,25,60,0.6);
+    position: relative;
+    z-index: 1;
+  }
+  .section-title {
+    text-align: center;
+    color: #d8e0ff;
+    margin-bottom: 20px;
+    font-size: 26px;
+  }
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+  .project-text, .project-muted {
+    color: #c8d0f8;
+  }
+  .highlight {
+    color: #e7caff;
+    font-weight: 700;
+  }
+
+  /* Cat Image */
+  .cat-image-frame {
+    padding: 10px;
+    border-radius: 14px;
+    background: rgba(115,125,255,0.08);
+    border: 1px solid rgba(150,170,255,0.12);
+    box-shadow: inset 0 0 15px rgba(120,140,255,0.15);
+  }
+  .cat-image-frame img {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  /* About Project Section */
+  .about-project {
+    max-width: 900px;
+    margin: 40px auto 50px;
+    padding: 20px 30px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(30,40,90,0.5);
+    color: #c9d3ff;
+    font-size: 17px;
+    line-height: 1.5;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HOLOGRAPHIC COMMENTS */
+  .comments-holo {
+    max-width: 900px;
+    margin: 25px auto 40px;
+    padding: 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .comments-holo-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  /* Новый стиль для комментариев с фото */
+  .holo-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(100,120,255,0.1);
+    backdrop-filter: blur(6px);
+    color: #d8dfff;
+    overflow: hidden;
+  }
+
+  .holo-cat-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid rgba(180,200,255,0.6);
+    box-shadow: 0 0 8px rgba(120,150,255,0.8);
+    flex-shrink: 0;
+  }
+
+  .holo-text {
+    position: relative;
+    flex: 1;
+  }
+
+  .holo-text p {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+  }
+
+  .holo-text .author {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .holo-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(120,150,255,0.15), transparent 60%);
+    animation: holoMove 6s infinite linear;
+    z-index: -1;
+  }
+
+  /* Анимация свечения */
+  @keyframes holoMove {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(50%,40%); }
+  }
+
+  /* Responsive */
+  @media(max-width: 780px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+    .holo-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .holo-cat-img {
+      margin-bottom: 10px;
+    }
+  }
+</style>
+
+<script>
+  document.getElementById('fetch-cat-btn').addEventListener('click', () => {
+    const img = document.getElementById('random-cat-img');
+    const id = Math.floor(Math.random() * 9999);
+    img.src = `https://cataas.com/cat?${id}`;
+    img.style.display = "block";
+  });
+</script>
+
+{% endblock %}
