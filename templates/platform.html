@@ -20,8 +20,12 @@
                     <a href="{{ url_for('chat', chat_id=chat.chat_id) }}" 
                        class="chat-item {% if chat.chat_id == current_chat_id %}active{% endif %}">
                         <div class="chat-icon">
+                            <div class="image-loader" id="chat-icon-loader-{{ loop.index }}"><div class="spinner"></div></div>
                             {% if chat.icon %}
-                                <img src="data:image/png;base64,{{ chat.icon }}" alt="{{ chat.title }}">
+                                <img src="data:image/png;base64,{{ chat.icon }}" 
+                                     alt="{{ chat.title }}" 
+                                     class="centered-image loading-img"
+                                     onload="this.classList.add('loaded-img'); document.getElementById('chat-icon-loader-{{ loop.index }}').style.display='none';">
                             {% else %}
                                 <span>🐱</span>
                             {% endif %}

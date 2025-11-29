@@ -55,56 +55,10 @@ def _load_default_avatar() -> Optional[bytes]:
                     print(f"✅ Загружен default_avatar.png: {path}")
                     return f.read()
         
-        print("❌ default_avatar.png не найден, создаем базовый аватар")
-        return _generate_basic_avatar()
+        print("default_avatar.png не найден")
         
     except Exception as e:
-        print(f"❌ Ошибка загрузки default_avatar.png: {e}")
-        return _generate_basic_avatar()
-
-
-def _generate_basic_avatar() -> bytes:
-    """Создать простой аватар если все остальное не удалось"""
-    try:
-        size = 500
-        colors = [
-            (255, 200, 200), (200, 255, 200), (200, 200, 255),
-            (255, 255, 200), (255, 200, 255), (200, 255, 255)
-        ]
-        bg_color = random.choice(colors)
-        
-        img = Image.new('RGB', (size, size), color=bg_color)
-        draw = ImageDraw.Draw(img)
-        
-        # Рисуем простой круг с кошачьими ушками
-        face_color = (random.randint(200, 255), random.randint(200, 255), random.randint(200, 255))
-        draw.ellipse([50, 50, 450, 450], fill=face_color)
-        
-        # Глаза
-        eye_color = random.choice(['green', 'blue', 'yellow', 'orange'])
-        draw.ellipse([150, 200, 200, 250], fill=eye_color)
-        draw.ellipse([300, 200, 350, 250], fill=eye_color)
-        
-        # Нос
-        draw.ellipse([225, 275, 275, 325], fill='pink')
-        
-        # Усики
-        for i in range(3):
-            y = 300 + i * 20
-            draw.line([200, y, 100, y-30], fill='black', width=3)
-            draw.line([300, y, 400, y-30], fill='black', width=3)
-        
-        out = BytesIO()
-        img.save(out, format='PNG')
-        return out.getvalue()
-        
-    except Exception as e:
-        print(f"❌ Ошибка генерации базового аватара: {e}")
-        img = Image.new('RGB', (100, 100), color='gray')
-        out = BytesIO()
-        img.save(out, format='PNG')
-        return out.getvalue()
-
+        print(f"Ошибка загрузки default_avatar.png: {e}")
 
 def get_chat_avatar(chat_id: str) -> Optional[bytes]:
     """Получить аватар чата по его ID"""
@@ -152,7 +106,7 @@ def _circle_crop(image_bytes: bytes, size: int = 500) -> Optional[bytes]:
             im.putalpha(mask)
             
             out = BytesIO()
-            im.save(out, format="PNG", optimize=True)
+            im.save(out, format="PNG", optimize=True, compress_level=9)
             return out.getvalue()
             
     except Exception as e:
@@ -172,10 +126,6 @@ def create_chat(user_id: int, first_message: str = None) -> str:
         if not circle_bytes:
             default_avatar = _load_default_avatar()
             circle_bytes = _circle_crop(default_avatar, 500) if default_avatar else None
-        
-        if not circle_bytes:
-            basic_avatar = _generate_basic_avatar()
-            circle_bytes = _circle_crop(basic_avatar, 500)
         
         # Создаем иконку (маленький аватар 64x64)
         icon_bytes = _circle_crop(circle_bytes, 64) if circle_bytes else None
@@ -260,6 +210,12 @@ def append_message(chat_id: str, role: str, content: str) -> None:
             return
             
         history = deserialize_history(chat.chat_history)
+        
+        # Если это первое сообщение пользователя, генерируем название чата
+        if role == 'user' and len(history) == 0:
+            title = generate_chat_title(content)
+            chat.title = title
+        
         history.append({"role": role, "content": content})
 
         def _prune_history(hist: List[Dict]) -> List[Dict]:

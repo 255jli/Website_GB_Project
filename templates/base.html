@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Космокот - Космический помощник{% endblock %}</title>
+    <title>{% block title %}Космокот - Космический собеседник{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body class="theme-dark">
     <div class="app-container">
         <!-- Навигационная панель -->
         <nav class="navbar">
             <div class="nav-brand">
-                <span class="logo">🚀🐱</span>
-                <span class="brand-name">Космокот</span>
+                <span class="logo" style="display: flex; align-items: center; height: 48px;">
+                    <img src="{{ url_for('assets', filename='rocket.png') }}" style="height: 40px; display: block; margin: auto 0;" alt="Rocket logo">
+                </span>
+                <span class="brand-name">CosmoCats</span>
             </div>
             
             <div class="nav-links">
@@ -33,13 +34,15 @@
                     <div class="user-menu">
                         <button class="user-btn" id="user-menu-trigger">
                             <div class="user-avatar-small">
+                                <div class="image-loader" id="avatar-loader"><div class="spinner"></div></div>
                                 {% if current_user.id %}
                                     <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" 
                                          alt="{{ current_user.name or current_user.login }}" 
                                          id="user-avatar-img"
-                                         onerror="this.style.display='none'">
+                                         class="centered-image loading-img"
+                                         onload="this.classList.add('loaded-img'); document.getElementById('avatar-loader').style.display='none';"
+                                         onerror="this.style.display='none'; document.getElementById('avatar-loader').style.display='none';">
                                 {% endif %}
-                                <span class="avatar-fallback">👤</span>
                             </div>
                             <span class="user-name">{{ current_user.name or current_user.login }}</span>
                             <span class="dropdown-arrow">▼</span>
@@ -93,7 +96,6 @@
 
     <script>
         // Глобальные переменные для скриптов
-        window.current_user_id = {{ current_user.id | default(0) }};
         window.current_user_name = "{{ current_user.name or current_user.login or 'Гость' }}";
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

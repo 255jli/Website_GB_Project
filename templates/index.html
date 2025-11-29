@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Космокот - Космический помощник{% endblock %}
+{% block title %}Космокот - Космический собеседник{% endblock %}
 
 {% block content %}
 <div class="hero-section">
     <div class="hero-content">
         <div class="hero-badge">
-            <span>🚀 Новое поколение ИИ-помощников</span>
+            <span>🚀 Новое поколение ИИ-чатов</span>
         </div>
         
         <h1 class="hero-title">
@@ -15,23 +15,23 @@
         </h1>
         
         <p class="hero-description">
-            Ваш космический помощник с характером милого котика. 
+            Ваш космический собеседник с характером милого кота. 
             Отвечает на вопросы, помогает с задачами и всегда поднимает настроение!
         </p>
 
         <div class="hero-actions">
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('platform') }}" class="btn btn-primary btn-large">
+                <a href="{{ url_for('platform') }}" class="btn-neo btn-large">
                     💬 Перейти к чатам
                 </a>
-                <a href="{{ url_for('chat', chat_id='new') }}" class="btn btn-outline btn-large">
+                <a href="{{ url_for('chat', chat_id='new') }}" class="btn-neo btn-large">
                     🚀 Новый чат
                 </a>
             {% else %}
-                <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">
+                <a href="{{ url_for('register') }}" class="btn-neo btn-large">
                     Начать путешествие
                 </a>
-                <a href="{{ url_for('login') }}" class="btn btn-outline btn-large">
+                <a href="{{ url_for('login') }}" class="btn-neo btn-large">
                     Уже есть аккаунт
                 </a>
             {% endif %}
@@ -56,7 +56,6 @@
     <div class="hero-visual">
         <div class="floating-cat">
             <div class="cat-body">🐱</div>
-            <div class="cat-spacesuit">🚀</div>
             <div class="stars">
                 <span class="star">⭐</span>
                 <span class="star">🌟</span>
@@ -74,8 +73,8 @@
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
-                <h3>Умный ИИ</h3>
-                <p>Основан на современной языковой модели, понимает контекст и отвечает осмысленно</p>
+                <h3>ИИ Собеседник</h3>
+                <p>Основан на космической языковой модели, понимает контекст и отвечает как кот</p>
             </div>
             
             <div class="feature-card">
@@ -105,7 +104,7 @@
             <div class="feature-card">
                 <div class="feature-icon">🎨</div>
                 <h3>Красивый дизайн</h3>
-                <p>Интуитивный и современный интерфейс с темной темой</p>
+                <p>Интуитивный и современный интерфейс с двумя темами</p>
             </div>
         </div>
     </div>
@@ -128,7 +127,7 @@
                     <div class="message-avatar">🐱</div>
                     <div class="message-content">
                         <div class="message-text">
-                            Мяу! Я Космокот - твой космический помощник! 
+                            Мяу! Я Космокот - твой космический собеседник! 
                             Отвечаю на вопросы, помогаю с задачами и поднимаю настроение. 
                             Что тебя интересует? 🚀
                         </div>
@@ -152,16 +151,116 @@
         <h2 class="section-title">Случайный космокот</h2>
         <div class="cat-generator-content">
             <div class="cat-image-container">
-                <img id="random-cat-img" src="" alt="Случайный котик" style="display: none;">
+                <div class="image-loader" id="cat-loader" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                <img id="random-cat-img" src="" alt="Случайный котик" class="centered-image" style="display: none; margin: 0 auto; max-width: 100%;">
                 <div class="cat-placeholder" id="cat-placeholder">
                     <span>🐱</span>
-                    <p>Нажмите кнопку для генерации котика</p>
+                    <p>Нажмите кнопку для генерации кота</p>
+                </div>
+                <div id="cat-error" style="display: none; color: red; text-align: center;">
+                    Мяу, ошибка загрузки! Попробуй ещё.
                 </div>
             </div>
             <button class="btn btn-primary" id="fetch-cat-btn">
-                Сгенерировать котика
+                Сгенерировать кота
             </button>
         </div>
     </div>
 </section>
+
+<section class="comments-holo">
+    <div class="container">
+        <h2 class="section-title">Комментарии космических котов</h2>
+        <div class="comments-holo-grid">
+            <div class="holo-item">
+                <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=1" alt="Nebula" />
+                <p>«Сканирую пространство… У вас отличная энергия.» — Nebula</p>
+            </div>
+            <div class="holo-item">
+                <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=2" alt="Orion" />
+                <p>«Сигнал стабилен. К взлёту готовы!» — Orion</p>
+            </div>
+            <div class="holo-item">
+                <img class="holo-cat-img" src="https://cataas.com/cat?size=60&random=3" alt="Comet" />
+                <p>«Добро пожаловать в космо-мир!» — Comet</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fetchBtn = document.getElementById('fetch-cat-btn');
+        const catImg = document.getElementById('random-cat-img');
+        const placeholder = document.getElementById('cat-placeholder');
+        const loader = document.getElementById('cat-loader');
+        const errorMsg = document.getElementById('cat-error');
+
+        fetchBtn.addEventListener('click', function() {
+            placeholder.style.display = 'none';
+            loader.style.display = 'flex';
+            errorMsg.style.display = 'none';
+            catImg.style.display = 'none';
+
+            fetch('/random-cat')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        catImg.src = data.url;
+                        catImg.style.display = 'block';
+                    } else {
+                        throw new Error('No URL');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    errorMsg.style.display = 'block';
+                    placeholder.style.display = 'block';
+                })
+                .finally(() => {
+                    loader.style.display = 'none';
+                });
+        });
+    });
+</script>
+
+<style>
+    .btn-neo {
+        display: inline-block;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #3f5dff, #6f8dff);
+        border-radius: 10px;
+        color: white;
+        font-size: 18px;
+        text-decoration: none;
+        box-shadow: 0 0 18px rgba(125,150,255,0.4);
+        transition: 0.25s ease;
+    }
+    .btn-neo:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 25px rgba(160,180,255,0.7);
+    }
+    .btn-neo.btn-large {
+        padding: 14px 28px;
+        font-size: 18px;
+    }
+
+    .holo-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.03);
+        color: #d8dfff;
+    }
+    .holo-cat-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}

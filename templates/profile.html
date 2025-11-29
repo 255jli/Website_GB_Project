@@ -13,13 +13,10 @@
         <div class="profile-sidebar">
             <div class="user-card">
                 <div class="user-avatar-large">
-                    {% if current_user.id %}
-                        <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" 
-                             alt="{{ current_user.name or current_user.login }}"
-                             id="profile-avatar-img"
-                             onerror="this.style.display='none'">
-                    {% endif %}
-                    <span class="avatar-fallback-large">👤</span>
+                    <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" 
+                         alt="{{ current_user.name or current_user.login }}"
+                         id="profile-avatar-img"
+                         onerror="this.onerror=null;this.src='{{ url_for('assets', filename='default_avatar.png') }}';">
                 </div>
                 <div class="user-info">
                     <h3>{{ current_user.name or current_user.login }}</h3>
@@ -99,12 +96,9 @@
                     <div class="avatar-upload">
                         <div class="avatar-preview">
                             <div class="avatar-preview-img">
-                                {% if current_user.id %}
-                                    <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" 
-                                         alt="Текущий аватар"
-                                         onerror="this.style.display='none'">
-                                {% endif %}
-                                <span class="avatar-preview-fallback">👤</span>
+                                <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" 
+                                     alt="Текущий аватар"
+                                     onerror="this.onerror=null;this.src='{{ url_for('assets', filename='default_avatar.png') }}';">
                             </div>
                         </div>
 

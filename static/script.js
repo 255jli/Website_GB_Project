@@ -139,6 +139,8 @@ class CatGenerator {
         this.catButton = document.getElementById('fetch-cat-btn');
         this.catImage = document.getElementById('random-cat-img');
         this.catPlaceholder = document.getElementById('cat-placeholder');
+        this.catLoader = document.getElementById('cat-loader');
+        this.catError = document.getElementById('cat-error');
         this.init();
     }
 
@@ -150,67 +152,40 @@ class CatGenerator {
 
     async fetchRandomCat() {
         if (!this.catButton || !this.catImage) return;
-
-        // Сохраняем оригинальный текст
         const originalText = this.catButton.textContent;
-        
-        // Блокируем кнопку и показываем загрузку
         this.catButton.disabled = true;
         this.catButton.textContent = 'Загружаю...';
         this.catButton.classList.add('loading');
-
+        if (this.catLoader) this.catLoader.style.display = 'flex';
+        if (this.catPlaceholder) this.catPlaceholder.style.display = 'none';
+        if (this.catError) this.catError.style.display = 'none';
+        this.catImage.style.display = 'none';
         try {
             const response = await fetch('/random-cat');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
+            if (!response.ok) throw new Error();
             const data = await response.json();
-            
             if (data.url) {
-                // Скрываем плейсхолдер и показываем изображение
-                if (this.catPlaceholder) {
-                    this.catPlaceholder.style.display = 'none';
-                }
-                
+                this.catImage.src = data.url + '?t=' + Date.now();
                 this.catImage.style.display = 'block';
-                this.catImage.src = data.url + '?t=' + Date.now(); // Добавляем timestamp для обхода кэша
-                this.catImage.alt = 'Случайный космокот';
-                
-                // Добавляем анимацию появления
                 this.catImage.style.animation = 'fadeIn 0.5s ease-in';
-                
             } else {
-                throw new Error('Некорректный ответ сервера');
+                if (this.catError) {
+                    this.catError.textContent = 'Мяу, ошибка загрузки! Попробуй ещё.';
+                    this.catError.style.display = 'block';
+                }
+                if (this.catPlaceholder) this.catPlaceholder.style.display = 'block';
             }
-
         } catch (error) {
-            console.error('Ошибка загрузки кота:', error);
-            this.showError('Не удалось загрузить котика. Попробуйте ещё раз.');
+            if (this.catError) {
+                this.catError.textContent = 'Мяу, ошибка загрузки! Попробуй ещё.';
+                this.catError.style.display = 'block';
+            }
+            if (this.catPlaceholder) this.catPlaceholder.style.display = 'block';
         } finally {
-            // Восстанавливаем кнопку
             this.catButton.disabled = false;
             this.catButton.textContent = originalText;
             this.catButton.classList.remove('loading');
-        }
-    }
-
-    showError(message) {
-        // Показываем плейсхолдер с сообщением об ошибке
-        if (this.catPlaceholder) {
-            this.catPlaceholder.innerHTML = `
-                <span>😿</span>
-                <p>${message}</p>
-            `;
-            this.catPlaceholder.style.display = 'flex';
-            this.catPlaceholder.style.flexDirection = 'column';
-            this.catPlaceholder.style.alignItems = 'center';
-            this.catPlaceholder.style.justifyContent = 'center';
-        }
-        
-        if (this.catImage) {
-            this.catImage.style.display = 'none';
+            if (this.catLoader) this.catLoader.style.display = 'none';
         }
     }
 }
@@ -380,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Дополнительные улучшения UX
-    this.enhanceUX();
+    enhanceUX();
 });
 
 // === Дополнительные улучшения UX ===
@@ -399,15 +374,7 @@ function enhanceUX() {
         });
     });
 
-    // Подтверждение выхода
-    const logoutLinks = document.querySelectorAll('a[href*="logout"]');
-    logoutLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            if (!confirm('Вы уверены, что хотите выйти?')) {
-                e.preventDefault();
-            }
-        });
-    });
+    // Подтверждение выхода (без confirm)
 
     // Обработка изображений с запасным вариантом
     document.querySelectorAll('img').forEach(img => {

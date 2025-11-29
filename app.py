@@ -29,9 +29,6 @@ def create_app() -> Flask:
     def index():
         return render_template("index.html")
 
-    @app.route("/main")
-    def index():
-        return render_template("index_a.html")
 
     @app.route("/random-cat")
     def random_cat():
@@ -72,20 +69,6 @@ def create_app() -> Flask:
             flash("Неверный логин или пароль", "error")
         return render_template("login.html")
 
-    @app.route("/login_main", methods=["GET", "POST"])
-    def login():
-        if request.method == "POST":
-            login_value = request.form.get("login", "").strip()
-            password = request.form.get("password", "")
-            if auth_manager.verify_login(login_value, password):
-                user = auth_manager.get_user_by_login(login_value)
-                if user:
-                    auth_manager.login_user_session(user)
-                    next_page = request.args.get('next')
-                    return redirect(next_page or url_for("platform_a"))
-            flash("Неверный логин или пароль", "error")
-        return render_template("login_a.html")
-
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if request.method == "POST":
@@ -105,26 +88,6 @@ def create_app() -> Flask:
                 auth_manager.login_user_session(user)
                 return redirect(url_for("platform"))
         return render_template("register.html")
-
-    @app.route("/register_main", methods=["GET", "POST"])
-    def register():
-        if request.method == "POST":
-            login_value = request.form.get("login", "").strip()
-            name = request.form.get("name", "").strip() or None
-            password = request.form.get("password", "")
-            if not login_value or not password:
-                flash("Укажите логин и пароль", "error")
-                return render_template("register_a.html")
-            ok = auth_manager.register_user(login_value, password, name)
-            if not ok:
-                flash("Такой логин уже существует", "error")
-                return render_template("register_a.html")
-            # Auto-login after successful registration
-            user = auth_manager.get_user_by_login(login_value)
-            if user:
-                auth_manager.login_user_session(user)
-                return redirect(url_for("platform_a"))
-        return render_template("register_a.html")
 
     @app.route("/logout")
     @login_required
@@ -226,8 +189,23 @@ def create_app() -> Flask:
         """Получить аватар пользователя"""
         avatar_blob = profile_manager.get_user_avatar(user_id)
         if not avatar_blob:
-            return "", 204
+            # Вернуть дефолтный аватар из assets через отдельный маршрут
+            return redirect(url_for('default_avatar'))
         return Response(avatar_blob, mimetype="image/png")
+
+    @app.route("/assets/<path:filename>")
+    def assets(filename):
+        assets_path = os.path.join(app.root_path, "assets", filename)
+        if os.path.exists(assets_path):
+            return send_file(assets_path)
+        return "", 404
+
+    @app.route("/user/default_avatar.png")
+    def default_avatar():
+        assets_path = os.path.join(app.root_path, "assets", "default_avatar.png")
+        if os.path.exists(assets_path):
+            return send_file(assets_path, mimetype="image/png")
+        return "", 404
 
     @app.route("/chat/<string:chat_id>/avatar")
     def chat_avatar(chat_id: str):

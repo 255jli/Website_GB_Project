@@ -3,25 +3,8 @@ from typing import Optional, Iterator, List, Dict, Any
 from contextlib import contextmanager
 import os
 import json
-from datetime import datetime
-
-from sqlalchemy import (
-    create_engine,
-    String,
-    Integer,
-    LargeBinary,
-    ForeignKey,
-    Text,
-    DateTime
-)
-from sqlalchemy.orm import (
-    DeclarativeBase,
-    Mapped,
-    mapped_column,
-    relationship,
-    sessionmaker,
-    Session,
-)
+from sqlalchemy import create_engine, String, Integer, LargeBinary, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker, Session
 
 class Base(DeclarativeBase):
     pass
@@ -56,18 +39,15 @@ def get_session() -> Iterator[Session]:
 
 class User(Base):
     __tablename__ = "users"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     login: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     avatar_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
-
     chats: Mapped[List["Chat"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 class Chat(Base):
     __tablename__ = "chats"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
     chat_id: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
@@ -75,7 +55,6 @@ class Chat(Base):
     cat_avatar_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
     title: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     icon_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
-
     user: Mapped[User] = relationship(back_populates="chats")
 
 def serialize_history(messages: List[Dict[str, Any]]) -> bytes:

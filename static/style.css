@@ -48,7 +48,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     line-height: 1.6;
@@ -326,15 +326,6 @@ body {
 .cat-body {
     font-size: 8rem;
     animation: float 3s ease-in-out infinite;
-}
-
-.cat-spacesuit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4rem;
-    opacity: 0.7;
 }
 
 .stars {
@@ -1474,4 +1465,47 @@ body {
 /* Убедиться что fallback виден когда изображение не загружено */
 .user-avatar-small img:error + .avatar-fallback {
     display: flex;
+}
+
+/* Новые стили для чата и профиля */
+.new-chat-form {
+    display: inline-block;
+}
+
+.avatar-preview-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 3rem;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+}
+
+#profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#message-input {
+    resize: vertical;
+}
+
+#new-messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.typing-text {
+    display: inline-flex;
+    align-items: center;
+    min-width: 60px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
